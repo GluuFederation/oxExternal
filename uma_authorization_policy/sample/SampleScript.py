@@ -23,9 +23,8 @@ class AuthorizationPolicy(AuthorizationPolicyType):
     def getApiVersion(self):
         return 1
 
-    # Update user entry before persistent it
-    #   user is org.gluu.oxtrust.model.GluuCustomPerson
-    #   persisted is boolean value to specify if operation type: add/modify
+    # Process policy rule
+    #   authorizationContext is org.xdi.oxauth.service.uma.authorization.AuthorizationContext
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def authorize(self, authorizationContext, configurationAttributes):
         print "UMA Authorization policy. Attempting to authorize client"
