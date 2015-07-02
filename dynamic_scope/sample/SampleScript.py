@@ -20,7 +20,7 @@ class DynamicScope(DynamicScopeType):
         print "Dynamic scope. Destroyed successfully"
         return True   
 
-    # Update Json Web token before signing/encrypring it
+    # Update Json Web token before signing/encrypting it
     #   dynamicScopeContext is org.xdi.oxauth.service.external.context.DynamicScopeExternalContext
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def update(self, dynamicScopeContext, configurationAttributes):
