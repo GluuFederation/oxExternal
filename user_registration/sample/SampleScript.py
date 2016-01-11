@@ -1,4 +1,5 @@
 from org.xdi.model.custom.script.type.user import UserRegistrationType
+from org.xdi.ldap.model import GluuStatus
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
 
@@ -10,6 +11,9 @@ class UserRegistration(UserRegistrationType):
 
     def init(self, configurationAttributes):
         print "User registration. Initialization"
+
+        self.enable_user = StringHelper.toBoolean(configurationAttributes.get("enable_user").getValue2(), False)
+
         print "User registration. Initialized successfully"
 
         return True   
@@ -34,6 +38,13 @@ class UserRegistration(UserRegistrationType):
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def preRegistration(self, user, requestParameters, configurationAttributes):
         print "User registration. Pre method"
+
+        userStatus = GluuStatus.ACTIVE
+        if not self.enable_user:
+            userStatus = GluuStatus.INACTIVE
+
+        # Disable/Enable registered user
+        user.setStatus(userStatus)
 
         return True
 
