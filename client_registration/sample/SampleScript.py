@@ -53,8 +53,5 @@ class ClientRegistration(ClientRegistrationType):
 
         return True
 
-    def logout(self, configurationAttributes, requestParameters):
-        return True
-
     def getApiVersion(self):
         return 1
