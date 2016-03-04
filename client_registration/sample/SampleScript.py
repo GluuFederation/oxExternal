@@ -1,3 +1,9 @@
+# oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
+# Copyright (c) 2016, Gluu
+#
+# Author: Yuriy Movchan
+#
+
 from org.xdi.model.custom.script.type.client import ClientRegistrationType
 from org.xdi.util import StringHelper, ArrayHelper
 from org.xdi.oxauth.service import ScopeService
