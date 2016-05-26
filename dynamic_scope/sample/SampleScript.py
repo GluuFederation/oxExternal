@@ -26,16 +26,17 @@ class DynamicScope(DynamicScopeType):
         print "Dynamic scope. Destroyed successfully"
         return True   
 
-    # Update Json Web token before signing/encrypting it
+    # Update Json Web token before signing/encrypring it
     #   dynamicScopeContext is org.xdi.oxauth.service.external.context.DynamicScopeExternalContext
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def update(self, dynamicScopeContext, configurationAttributes):
         print "Dynamic scope. Update method"
 
         dynamicScopes = dynamicScopeContext.getDynamicScopes()
+        authorizationGrant = dynamicScopeContext.getAuthorizationGrant()
         user = dynamicScopeContext.getUser()
-        jsonToken = dynamicScopeContext.getJsonToken()
-        claims = jsonToken.getClaims()
+        jsonWebResponse = dynamicScopeContext.getJsonWebResponse()
+        claims = jsonWebResponse.getClaims()
 
         # Iterate through list of dynamic scopes in order to add custom scopes if needed
         print "Dynamic scope. Dynamic scopes:", dynamicScopes
@@ -52,6 +53,9 @@ class DynamicScope(DynamicScopeType):
                     claims.setClaim("work_phone", workPhone)
                 continue
 
+        return True
+
+    def logout(self, configurationAttributes, requestParameters):
         return True
 
     def getApiVersion(self):
