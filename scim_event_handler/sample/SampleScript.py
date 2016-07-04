@@ -6,6 +6,8 @@
 from org.xdi.model.custom.script.type.scim import ScimType
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
+from org.gluu.oxtrust.ldap.service import IPersonService, PersonService
+from org.gluu.oxtrust.model import GluuCustomPerson
 
 import java
 
@@ -38,7 +40,10 @@ class ScimEventHandler(ScimType):
         return True
 
     def updateUser(self, user, configurationAttributes):
-        print "ScimEventHandler (updateUser): Current id = " + user.getUid()
+        personService = PersonService.instance()
+        oldUser = personService.getPersonByUid(user.getUid())
+        print "ScimEventHandler (updateUser): Old displayName = " + oldUser .getDisplayName()
+        print "ScimEventHandler (updateUser): New displayName = " + user.getDisplayName()
         return True
 
     def deleteUser(self, user, configurationAttributes):
