@@ -1,12 +1,6 @@
-# oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
-# Copyright (c) 2016, Gluu
-#
-# Author: Yuriy Movchan
-#
-
 from org.xdi.model.custom.script.type.uma import AuthorizationPolicyType
 from org.xdi.util import StringHelper, ArrayHelper
-from java.util import Arrays, ArrayList
+from java.util import Arrays, ArrayList, HashSet
 from org.xdi.oxauth.service.uma.authorization import AuthorizationContext
 
 import java
@@ -17,6 +11,10 @@ class AuthorizationPolicy(AuthorizationPolicyType):
 
     def init(self, configurationAttributes):
         print "UMA authorization policy. Initialization"
+
+        self.clientsSet = self.prepareClientsSet(configurationAttributes)
+        print "UMA authorization policy. Initialization. Count authorized clients: %s" % self.clientsSet.size()
+
         print "UMA authorization policy. Initialized successfully"
 
         return True   
@@ -37,7 +35,7 @@ class AuthorizationPolicy(AuthorizationPolicyType):
         client_id = authorizationContext.getGrant().getClientId()
 
         print "UMA Authorization policy. Client: ", client_id
-        if (StringHelper.equalsIgnoreCase("@!1111!0008!FDC0.0FF5", client_id)):
+        if (self.clientsSet.contains(client_id)):
             print "UMA Authorization policy. Authorizing client"
             return True
         else:
@@ -46,3 +44,28 @@ class AuthorizationPolicy(AuthorizationPolicyType):
 
         print "UMA Authorization policy. Authorizing client"
         return True
+
+    def prepareClientsSet(self, configurationAttributes):
+        clientsSet = HashSet()
+        if (not configurationAttributes.containsKey("allowed_clients")):
+            return clientsSet
+
+        allowedClientsList = configurationAttributes.get("allowed_clients").getValue2()
+        if (StringHelper.isEmpty(allowedClientsList)):
+            print "UMA authorization policy. Initialization. The property allowed_clients is empty"
+            return clientsSet    
+
+        allowedClientsListArray = StringHelper.split(allowedClientsList, ",")
+        if (ArrayHelper.isEmpty(allowedClientsListArray)):
+            print "UMA authorization policy. Initialization. There aren't clients specified in allowed_clients property"
+            return clientsSet
+        
+        # Convert to HashSet to quick search
+        i = 0
+        count = len(allowedClientsListArray)
+        while (i < count):
+            client = allowedClientsListArray[i]
+            clientsSet.add(client)
+            i = i + 1
+
+        return clientsSet
