@@ -38,20 +38,8 @@ class DynamicScope(DynamicScopeType):
         jsonWebResponse = dynamicScopeContext.getJsonWebResponse()
         claims = jsonWebResponse.getClaims()
 
-        # Iterate through list of dynamic scopes in order to add custom scopes if needed
-        print "Dynamic scope. Dynamic scopes:", dynamicScopes
-        for dynamicScope in dynamicScopes:
-            # Add organization name if there is scope = org_name
-            if (StringHelper.equalsIgnoreCase(dynamicScope, "org_name")):
-                claims.setClaim("org_name", "Gluu, Inc.")
-                continue
-
-            # Add work phone if there is scope = work_phone
-            if (StringHelper.equalsIgnoreCase(dynamicScope, "work_phone")):
-                workPhone = user.getAttribute("telephoneNumber");
-                if (StringHelper.isNotEmpty(workPhone)):
-                    claims.setClaim("work_phone", workPhone)
-                continue
+        # Add organization name if there is scope = org_name
+        claims.setClaim("org_name", "Gluu, Inc.")
 
         return True
 

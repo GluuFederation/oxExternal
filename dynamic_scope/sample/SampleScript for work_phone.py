@@ -5,7 +5,6 @@
 #
 
 from org.xdi.model.custom.script.type.scope import DynamicScopeType
-from org.xdi.oxauth.service import UserService
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
 
@@ -16,31 +15,33 @@ class DynamicScope(DynamicScopeType):
         self.currentTimeMillis = currentTimeMillis
 
     def init(self, configurationAttributes):
-        print "Permission dynamic scope. Initialization"
+        print "Dynamic scope. Initialization"
 
-        print "Permission dynamic scope. Initialized successfully"
+        print "Dynamic scope. Initialized successfully"
 
         return True   
 
     def destroy(self, configurationAttributes):
-        print "Permission dynamic scope. Destroy"
-        print "Permission dynamic scope. Destroyed successfully"
+        print "Dynamic scope. Destroy"
+        print "Dynamic scope. Destroyed successfully"
         return True   
 
     # Update Json Web token before signing/encrypring it
     #   dynamicScopeContext is org.xdi.oxauth.service.external.context.DynamicScopeExternalContext
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def update(self, dynamicScopeContext, configurationAttributes):
-        print "Permission dynamic scope scope. Update method"
+        print "Dynamic scope. Update method"
 
+        dynamicScopes = dynamicScopeContext.getDynamicScopes()
         authorizationGrant = dynamicScopeContext.getAuthorizationGrant()
         user = dynamicScopeContext.getUser()
         jsonWebResponse = dynamicScopeContext.getJsonWebResponse()
         claims = jsonWebResponse.getClaims()
 
-        roles = userService.getCustomAttribute(user, "role");
-        if roles != None:
-            claims.setClaim("role", role.getValues())
+        # Add work phone if there is scope = work_phone
+        workPhone = user.getAttribute("telephoneNumber");
+        if (StringHelper.isNotEmpty(workPhone)):
+            claims.setClaim("work_phone", workPhone)
 
         return True
 
