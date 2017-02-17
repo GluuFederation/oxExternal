@@ -4,6 +4,7 @@
 # Author: Yuriy Movchan
 #
 
+from org.jboss.seam import Component
 from org.xdi.model.custom.script.type.client import ClientRegistrationType
 from org.xdi.util import StringHelper, ArrayHelper
 from org.xdi.oxauth.service import ScopeService
@@ -18,7 +19,7 @@ class ClientRegistration(ClientRegistrationType):
     def init(self, configurationAttributes):
         print "Client registration. Initialization"
 
-        self.scopeService = ScopeService.instance()
+        self.scopeService = Component.getInstance(ScopeService)
 
         print "Client registration. Initialized successfully"
 
