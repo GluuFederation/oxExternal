@@ -42,3 +42,18 @@ class UpdateUser(UpdateUserType):
 
     def getApiVersion(self):
         return 1
+    
+    def addUser(self, user, persisted, configurationAttributes):
+        print "addUser user. addUser method"
+
+        return True
+		
+    def deleteUser(self, user, persisted, configurationAttributes):
+        print "deleteUser user. deleteUser method"
+
+        return True
+		
+    def newUser(self, user, persisted, configurationAttributes):
+        print "newUser user. newUser method"
+
+        return True
