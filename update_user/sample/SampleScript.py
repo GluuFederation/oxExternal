@@ -53,7 +53,7 @@ class UpdateUser(UpdateUserType):
 
         return True
 		
-    def newUser(self, user, persisted, configurationAttributes):
+    def newUser(self, user, configurationAttributes):
         print "newUser user. newUser method"
 
         return True
