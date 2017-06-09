@@ -5,6 +5,7 @@
 #
 
 from org.xdi.model.custom.script.type.scope import DynamicScopeType
+from org.xdi.oxauth.service import UserService
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
 
@@ -39,7 +40,8 @@ class DynamicScope(DynamicScopeType):
         claims = jsonWebResponse.getClaims()
 
         # Add work phone if there is scope = work_phone
-        workPhone = user.getAttribute("telephoneNumber");
+        userService = UserService.instance()
+        workPhone = user.getAttribute("telephoneNumber")
         if (StringHelper.isNotEmpty(workPhone)):
             claims.setClaim("work_phone", workPhone)
 

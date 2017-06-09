@@ -38,9 +38,10 @@ class DynamicScope(DynamicScopeType):
         jsonWebResponse = dynamicScopeContext.getJsonWebResponse()
         claims = jsonWebResponse.getClaims()
 
-        roles = userService.getCustomAttribute(user, "role");
+        userService = UserService.instance()
+        roles = userService.getCustomAttribute(user, "role")
         if roles != None:
-            claims.setClaim("role", role.getValues())
+            claims.setClaim("role", roles.getValues())
 
         return True
 

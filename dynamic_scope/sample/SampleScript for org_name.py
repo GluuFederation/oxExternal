@@ -5,6 +5,7 @@
 #
 
 from org.xdi.model.custom.script.type.scope import DynamicScopeType
+from org.xdi.oxauth.service import UserService
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
 
