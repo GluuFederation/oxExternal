@@ -4,7 +4,7 @@
 # Author: Yuriy Movchan
 #
 
-from org.jboss.seam import Component
+from org.xdi.service.cdi.util import CdiUtil
 from org.xdi.model.custom.script.type.client import ClientRegistrationType
 from org.xdi.util import StringHelper, ArrayHelper
 from org.xdi.oxauth.service import ScopeService
@@ -18,8 +18,6 @@ class ClientRegistration(ClientRegistrationType):
 
     def init(self, configurationAttributes):
         print "Client registration. Initialization"
-
-        self.scopeService = Component.getInstance(ScopeService)
 
         print "Client registration. Initialized successfully"
 
@@ -52,7 +50,8 @@ class ClientRegistration(ClientRegistrationType):
             currentScopes = client.getScopes()
             print "Client registration. Current scopes:", currentScopes
             
-            addressScope = self.scopeService.getScopeByDisplayName("address")
+            scopeService = CdiUtil.bean(ScopeService)
+            addressScope = scopeService.getScopeByDisplayName("address")
             newScopes = ArrayHelper.addItemToStringArray(currentScopes, addressScope.getDn())
     
             print "Client registration. Result scopes:", newScopes
