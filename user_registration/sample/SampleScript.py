@@ -8,6 +8,10 @@ from org.xdi.model.custom.script.type.user import UserRegistrationType
 from org.xdi.ldap.model import GluuStatus
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
+from org.gluu.oxtrust.ldap.service import ApplianceService
+from org.gluu.oxtrust.model import  GluuAppliance
+from org.gluu.oxtrust.util import MailUtils
+from org.gluu.oxtrust.ldap.service import OrganizationService
 
 import java
 
@@ -45,14 +49,14 @@ class UserRegistration(UserRegistrationType):
     def preRegistration(self, user, requestParameters, configurationAttributes):
         print "User registration. Pre method"
 
-        userStatus = GluuStatus.ACTIVE
-        if not self.enable_user:
-            userStatus = GluuStatus.INACTIVE
+        userStatus = GluuStatus.INACTIVE
 
         # Disable/Enable registered user
         user.setStatus(userStatus)
+        guid=StringHelper.getRandomString(16)
+        user.setGuid(guid)
 
-        return True
+        return user
 
     # User registration post method
     #   user is org.gluu.oxtrust.model.GluuCustomPerson
