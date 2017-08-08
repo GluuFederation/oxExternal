@@ -1,10 +1,12 @@
 # oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
 # Copyright (c) 2016, Gluu
 #
-# Author: Yuriy Movchan
-#
 
+
+from org.xdi.service.cdi.util import CdiUtil
 from org.xdi.model.custom.script.type.user import UserRegistrationType
+from org.xdi.service import MailService
+from org.gluu.oxtrust.ldap.service import IPersonService
 from org.xdi.ldap.model import GluuStatus
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
@@ -45,14 +47,14 @@ class UserRegistration(UserRegistrationType):
     def preRegistration(self, user, requestParameters, configurationAttributes):
         print "User registration. Pre method"
 
-        userStatus = GluuStatus.ACTIVE
-        if not self.enable_user:
-            userStatus = GluuStatus.INACTIVE
+	userStatus = GluuStatus.INACTIVE
+
 
         # Disable/Enable registered user
         user.setStatus(userStatus)
-
-        return True
+        self.guid=StringHelper.getRandomString(16)
+        user.setGuid(self.guid)
+        return user
 
     # User registration post method
     #   user is org.gluu.oxtrust.model.GluuCustomPerson
@@ -61,25 +63,22 @@ class UserRegistration(UserRegistrationType):
     def postRegistration(self, user, requestParameters, configurationAttributes):
         print "User registration. Post method"
 
+        mailService = CdiUtil.bean(MailService)
+        subject = "Confirmation mail for user registration"
+        body = "User Registered for %s. Please Confirm User Registration by clicking url: https://<servername>/identity/confirm/registration?code=%s" % (user.getMail(),self.guid)
+        mailService.sendMail(user.getMail(), subject, body)
         return True
-    
-    # User confirm New Registration method
-    #   user is org.gluu.oxtrust.model.GluuCustomPerson
-    #   requestParameters is java.util.Map<String, String[]>
-    #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
+
     def confirmRegistration(self, user, requestParameters, configurationAttributes):
-        print "User registration. confirm Registration method"
-
-        return True
-    
-    # User Get confirmation page method
-    #   user is org.gluu.oxtrust.model.GluuCustomPerson
-    #   requestParameters is java.util.Map<String, String[]>
-    #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
-    def getConfirmationPage(self, user, requestParameters, configurationAttributes):
-        print "User registration. Get confirmation page method"
-
-        return True
+	print "User registration. Confirm method"
+	code = requestParameters.get("code")[0]
+        personService = CdiUtil.bean(IPersonService)
+	if code == self.guid:
+		user.setStatus(GluuStatus.ACTIVE)
+                user.setGuid("")
+                personService.updatePerson(user)
+		self.enable_user = True
+	return True
 
     def getApiVersion(self):
         return 1
