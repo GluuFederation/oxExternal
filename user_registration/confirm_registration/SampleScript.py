@@ -1,4 +1,4 @@
- # oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
+# oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
 # Copyright (c) 2016, Gluu
 #
 
@@ -10,6 +10,8 @@ from org.gluu.oxtrust.ldap.service import IPersonService
 from org.xdi.ldap.model import GluuStatus
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
+from org.xdi.config.oxtrust import AppConfiguration
+from org.gluu.oxtrust.util import ServiceUtil
 
 import java
 
@@ -47,7 +49,7 @@ class UserRegistration(UserRegistrationType):
     def preRegistration(self, user, requestParameters, configurationAttributes):
         print "User registration. Pre method"
 
-	    userStatus = GluuStatus.INACTIVE
+	userStatus = GluuStatus.INACTIVE
 
 
         # Disable/Enable registered user
@@ -62,18 +64,22 @@ class UserRegistration(UserRegistrationType):
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def postRegistration(self, user, requestParameters, configurationAttributes):
         print "User registration. Post method"
-
+	appConfiguration= CdiUtil.bean(AppConfiguration)
+        servername = appConfiguration.getApplianceUrl()
         mailService = CdiUtil.bean(MailService)
         subject = "Confirmation mail for user registration"
-        body = "User Registered for %s. Please Confirm User Registration by clicking url: https://<servername>/identity/confirm/registration?code=%s" % (user.getMail(),self.guid)
+        body = "User Registered for %s. Please Confirm User Registration by clicking url: %s/confirm/registration?code=%s" % (user.getMail(),servername,self.guid)
+        print body
         mailService.sendMail(user.getMail(), subject, body)
         return True
 
     def confirmRegistration(self, user, requestParameters, configurationAttributes):
 	print "User registration. Confirm method"
-	code = requestParameters.get("code")[0]
-    personService = CdiUtil.bean(IPersonService)
-	if code == self.guid:
+	confirmation_code = ServiceUtil.getFirstValue(requestParameters, "code")
+        personService = CdiUtil.bean(IPersonService)
+        if not confirmation_code:
+	    	print "User registration. Confirm method. Confirmation code not existin tin request"
+	if confirmation_code == user.getGuid():
 		user.setStatus(GluuStatus.ACTIVE)
                 user.setGuid("")
                 personService.updatePerson(user)
