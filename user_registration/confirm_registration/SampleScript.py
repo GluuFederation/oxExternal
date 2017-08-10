@@ -69,7 +69,6 @@ class UserRegistration(UserRegistrationType):
         mailService = CdiUtil.bean(MailService)
         subject = "Confirmation mail for user registration"
         body = "User Registered for %s. Please Confirm User Registration by clicking url: %s/confirm/registration?code=%s" % (user.getMail(),servername,self.guid)
-        print body
         mailService.sendMail(user.getMail(), subject, body)
         return True
 
