@@ -54,8 +54,8 @@ class UserRegistration(UserRegistrationType):
 
         # Disable/Enable registered user
         user.setStatus(userStatus)
-        self.guid=StringHelper.getRandomString(16)
-        user.setGuid(self.guid)
+        guid=StringHelper.getRandomString(16)
+        user.setGuid(guid)
         return user
 
     # User registration post method
@@ -68,7 +68,7 @@ class UserRegistration(UserRegistrationType):
         servername = appConfiguration.getApplianceUrl()
         mailService = CdiUtil.bean(MailService)
         subject = "Confirmation mail for user registration"
-        body = "User Registered for %s. Please Confirm User Registration by clicking url: %s/confirm/registration?code=%s" % (user.getMail(),servername,self.guid)
+        body = "User Registered for %s. Please Confirm User Registration by clicking url: %s/confirm/registration?code=%s" % (user.getMail(),servername,user.getGuid())
         mailService.sendMail(user.getMail(), subject, body)
         return True
 
