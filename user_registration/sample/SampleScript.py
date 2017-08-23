@@ -52,7 +52,7 @@ class UserRegistration(UserRegistrationType):
         # Disable/Enable registered user
         user.setStatus(userStatus)
 
-        return True
+        return user
 
     # User registration post method
     #   user is org.gluu.oxtrust.model.GluuCustomPerson
