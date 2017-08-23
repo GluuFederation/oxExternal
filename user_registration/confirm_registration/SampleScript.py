@@ -54,8 +54,8 @@ class UserRegistration(UserRegistrationType):
 
         # Disable/Enable registered user
         user.setStatus(userStatus)
-        guid=StringHelper.getRandomString(16)
-        user.setGuid(guid)
+        self.guid=StringHelper.getRandomString(16)
+        user.setGuid(self.guid)
         return user
 
     # User registration post method
@@ -68,14 +68,16 @@ class UserRegistration(UserRegistrationType):
         servername = appConfiguration.getApplianceUrl()
         mailService = CdiUtil.bean(MailService)
         subject = "Confirmation mail for user registration"
-        body = "User Registered for %s. Please Confirm User Registration by clicking url: %s/confirm/registration?code=%s" % (user.getMail(),servername,user.getGuid())
+        body = "User Registered for %s. Please Confirm User Registration by clicking url: %s/confirm/registration?code=%s" % (user.getMail(),servername,self.guid)
+        print body
         mailService.sendMail(user.getMail(), subject, body)
         return True
 
     def confirmRegistration(self, user, requestParameters, configurationAttributes):
 	print "User registration. Confirm method"
-	confirmation_code = ServiceUtil.getFirstValue(requestParameters, "code")
+	confirmation_code = requestParameters.get("code")[0]
         personService = CdiUtil.bean(IPersonService)
+        user = personService.getPersonByAttribute("oxGuid", confirmation_code)
         if not confirmation_code:
 	    	print "User registration. Confirm method. Confirmation code not existin tin request"
 	if confirmation_code == user.getGuid():
