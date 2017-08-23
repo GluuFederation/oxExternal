@@ -75,8 +75,7 @@ class UserRegistration(UserRegistrationType):
 
     def confirmRegistration(self, user, requestParameters, configurationAttributes):
 	print "User registration. Confirm method"
-	#confirmation_code = ServerUtil.getFirstValue(requestParameters, "code")
-	confirmation_code = requestParameters.get("code")[0]
+	confirmation_code = ServerUtil.getFirstValue(requestParameters, "code")
         personService = CdiUtil.bean(IPersonService)
         user = personService.getPersonByAttribute("oxGuid", confirmation_code)
         if not confirmation_code:
