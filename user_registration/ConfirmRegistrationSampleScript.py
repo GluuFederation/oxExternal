@@ -21,9 +21,6 @@ class UserRegistration(UserRegistrationType):
 
     def init(self, configurationAttributes):
         print "User registration. Initialization"
-
-        self.enable_user = StringHelper.toBoolean(configurationAttributes.get("enable_user").getValue2(), False)
-
         print "User registration. Initialized successfully"
 
         return True   
@@ -76,16 +73,23 @@ class UserRegistration(UserRegistrationType):
     def confirmRegistration(self, user, requestParameters, configurationAttributes):
 	print "User registration. Confirm method"
 	confirmation_code = ServerUtil.getFirstValue(requestParameters, "code")
-        personService = CdiUtil.bean(IPersonService)
-        user = personService.getPersonByAttribute("oxGuid", confirmation_code)
         if not confirmation_code:
 	    	print "User registration. Confirm method. Confirmation code not existin tin request"
+	    	return False
+
+        personService = CdiUtil.bean(IPersonService)
+        user = personService.getPersonByAttribute("oxGuid", confirmation_code)
+        if user == None:
+		print "User registration. Confirm method. There is no user by confirmation code: '%s'" % confirmation_code
+		return False
+
 	if confirmation_code == user.getGuid():
 		user.setStatus(GluuStatus.ACTIVE)
                 user.setGuid("")
                 personService.updatePerson(user)
-		self.enable_user = True
-	return True
+		return True
+
+    	return False
 
     def getApiVersion(self):
         return 1
