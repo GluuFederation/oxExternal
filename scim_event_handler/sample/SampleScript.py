@@ -26,6 +26,7 @@ class ScimEventHandler(ScimType):
         return True   
 
     def getApiVersion(self):
+        #return 2 if you want the post* scripts getting called
         return 1
 
     def createUser(self, user, configurationAttributes):
