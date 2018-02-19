@@ -7,7 +7,8 @@
 from org.xdi.model.custom.script.type.scim import ScimType
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
-from org.gluu.oxtrust.ldap.service import IPersonService, PersonService
+from org.xdi.service.cdi.util import CdiUtil
+from org.gluu.oxtrust.ldap.service import PersonService
 from org.gluu.oxtrust.model import GluuCustomPerson
 
 import java
@@ -29,6 +30,8 @@ class ScimEventHandler(ScimType):
         #return 2 if you want the post* scripts getting called
         return 1
 
+    # user is an instance of org.gluu.oxtrust.model.GluuCustomPerson
+    # configurationAttributes is a Map<String, org.xdi.model.SimpleCustomProperty>
     def createUser(self, user, configurationAttributes):
 
         print "ScimEventHandler (createUser): Current id = " + user.getUid()
@@ -45,10 +48,9 @@ class ScimEventHandler(ScimType):
         return True
 
     def updateUser(self, user, configurationAttributes):
-        personService = PersonService.instance()
-        oldUser = personService.getPersonByUid(user.getUid())
-        print "ScimEventHandler (updateUser): Old displayName = " + oldUser .getDisplayName()
-        print "ScimEventHandler (updateUser): New displayName = " + user.getDisplayName()
+        personService = CdiUtil.bean(PersonService)
+        oneUser = personService.getPersonByUid(user.getUid())
+        print "ScimEventHandler (updateUser): user's displayName = " + oneUser.getDisplayName()
         return True
 
     def postUpdateUser(self, user, configurationAttributes):
