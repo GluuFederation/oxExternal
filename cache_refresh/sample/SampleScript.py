@@ -8,6 +8,7 @@ from org.xdi.model.custom.script.type.user import CacheRefreshType
 from org.xdi.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
 from org.gluu.oxtrust.model import GluuCustomAttribute
+from org.xdi.model.custom.script.model.bind import BindCredentials
 
 import java
 
@@ -29,6 +30,7 @@ class CacheRefresh(CacheRefreshType):
     # Get bind credentials required to access source server 
     #   configId is the source server
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
+    #   return None (use password from configuration) or org.xdi.model.custom.script.model.bind.BindCredentials
     def getBindCredentials(self, configId):
         print "Cache refresh. GetBindCredentials method"
 
