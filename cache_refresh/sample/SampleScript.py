@@ -24,7 +24,15 @@ class CacheRefresh(CacheRefreshType):
     def destroy(self, configurationAttributes):
         print "Cache refresh. Destroy"
         print "Cache refresh. Destroyed successfully"
-        return True   
+        return True
+    
+    # Get bind credentials required to access source server 
+    #   configId is the source server
+    #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
+    def getBindCredentials(self, configId):
+        print "Cache refresh. GetBindCredentials method"
+
+        return None
 
     # Update user entry before persist it
     #   user is org.gluu.oxtrust.model.GluuCustomPerson
@@ -51,4 +59,4 @@ class CacheRefresh(CacheRefreshType):
         return True
 
     def getApiVersion(self):
-        return 1
+        return 2
