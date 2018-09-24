@@ -31,7 +31,7 @@ class CacheRefresh(CacheRefreshType):
     #   configId is the source server
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     #   return None (use password from configuration) or org.xdi.model.custom.script.model.bind.BindCredentials
-    def getBindCredentials(self, configId):
+    def getBindCredentials(self, configId, configurationAttributes):
         print "Cache refresh. GetBindCredentials method"
 
         return None
