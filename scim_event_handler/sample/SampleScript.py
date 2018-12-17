@@ -45,7 +45,7 @@ class ScimEventHandler(ScimType):
         personService = CdiUtil.bean(PersonService)
         oldUser = personService.getPersonByUid(user.getUid())
         print "ScimEventHandler (updateUser): Old displayName %s" % oldUser.getDisplayName()
-        print "ScimEventHandler (updateUser): New displayName " + user.getDisplayName()
+        print "ScimEventHandler (updateUser): New displayName %s" % user.getDisplayName()
         return True
 
     def deleteUser(self, user, configurationAttributes):
