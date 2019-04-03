@@ -1,7 +1,7 @@
-from org.xdi.model.custom.script.type.uma import AuthorizationPolicyType
-from org.xdi.util import StringHelper, ArrayHelper
+from org.gluu.model.custom.script.type.uma import AuthorizationPolicyType
+from org.gluu.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList, HashSet
-from org.xdi.oxauth.service.uma.authorization import AuthorizationContext
+from org.gluu.oxauth.service.uma.authorization import AuthorizationContext
 
 import java
 
@@ -28,7 +28,7 @@ class AuthorizationPolicy(AuthorizationPolicyType):
         return 1
 
     # Process policy rule
-    #   authorizationContext is org.xdi.oxauth.service.uma.authorization.AuthorizationContext
+    #   authorizationContext is org.gluu.oxauth.service.uma.authorization.AuthorizationContext
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def authorize(self, authorizationContext, configurationAttributes):
         print "UMA Authorization policy. Attempting to authorize client"
