@@ -9,6 +9,8 @@ from java.util import Arrays, ArrayList
 from org.gluu.oxtrust.ldap.service import PersonService
 from org.gluu.service.cdi.util import CdiUtil
 from org.gluu.oxtrust.model import GluuCustomPerson
+#Comment the line below if you are using Gluu CE 3.x
+from org.gluu.oxtrust.model.scim import ScimCustomPerson
 
 import java
 
@@ -29,6 +31,7 @@ class ScimEventHandler(ScimType):
         #return 2 if you want the post* scripts being executed
         return 1
 
+    # user is an instance of ScimCustomPerson in CE 4.0 for all user-related methods
     def createUser(self, user, configurationAttributes):
 
         print "ScimEventHandler (createUser): Current id = " + user.getUid()
@@ -43,6 +46,7 @@ class ScimEventHandler(ScimType):
 
     def updateUser(self, user, configurationAttributes):
         personService = CdiUtil.bean(PersonService)
+        # oldUser is an instance of GluuCustomPerson
         oldUser = personService.getPersonByUid(user.getUid())
         print "ScimEventHandler (updateUser): Old displayName %s" % oldUser.getDisplayName()
         print "ScimEventHandler (updateUser): New displayName %s" % user.getDisplayName()
