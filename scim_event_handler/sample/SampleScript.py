@@ -85,3 +85,11 @@ class ScimEventHandler(ScimType):
 
     def postDeleteGroup(self, group, configurationAttributes):
         return True
+    
+    #This method is available in CE 4.1 onwards
+    def getUser(self, user, configurationAttributes):
+        return True
+    
+    #This method is available in CE 4.1 onwards
+    def getGroup(self, group, configurationAttributes):
+        return True
