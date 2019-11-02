@@ -28,7 +28,8 @@ class ScimEventHandler(ScimType):
         return True   
 
     def getApiVersion(self):
-        #return 2 if you want the post* scripts being executed
+        #return 2 if you want the post* methods executed
+        #return 3 if you also want the get* methods executed
         return 1
 
     # user is an instance of ScimCustomPerson in CE 4.0 for all user-related methods
