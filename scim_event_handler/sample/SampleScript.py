@@ -1,12 +1,7 @@
-# oxTrust is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
-# Copyright (c) 2014, Gluu
-#
-# Author: Jose Gonzalez
-#
 from org.gluu.model.custom.script.type.scim import ScimType
 from org.gluu.util import StringHelper, ArrayHelper
 from java.util import Arrays, ArrayList
-from org.gluu.oxtrust.ldap.service import PersonService
+from org.gluu.oxtrust.service import PersonService
 from org.gluu.service.cdi.util import CdiUtil
 from org.gluu.oxtrust.model import GluuCustomPerson
 #Comment the line below if you are using Gluu CE 3.x
@@ -30,7 +25,8 @@ class ScimEventHandler(ScimType):
     def getApiVersion(self):
         #return 2 if you want the post* methods executed
         #return 3 if you also want the get* methods executed
-        return 1
+        #return 3 if you also want the postSearch* methods executed
+        return 4
 
     # user is an instance of ScimCustomPerson in CE 4.0 for all user-related methods
     def createUser(self, user, configurationAttributes):
@@ -94,3 +90,15 @@ class ScimEventHandler(ScimType):
     #This method is available in CE 4.1 onwards
     def getGroup(self, group, configurationAttributes):
         return True
+
+	#This method is available in CE 4.2 onwards
+	# results is an instance of org.gluu.persist.model.PagedResult<ScimCustomPerson>
+    def postSearchUsers(self, results, configurationAttributes):
+    	# person = results.getEntries().get(0)
+    	# person.setUid("fade_uid")
+    	return True
+
+	#This method is available in CE 4.2 onwards
+	# results is an instance of org.gluu.persist.model.PagedResult<org.gluu.oxtrust.model.GluuGroup>
+    def postSearchGroups(self, results, configurationAttributes):
+    	return True
