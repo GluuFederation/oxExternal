@@ -29,7 +29,7 @@ class ClientRegistration(ClientRegistrationType):
         print "Client registration. Destroyed successfully"
         return True   
 
-    # Update client entry before persistent it
+    # Create client entry before persisting it
     #   registerRequest is org.gluu.oxauth.client.RegisterRequest
     #   client is org.gluu.oxauth.model.registration.Client
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
@@ -60,14 +60,26 @@ class ClientRegistration(ClientRegistrationType):
 
         return True
 
-    # Update client entry before persistent it
+    # Update client entry before persisting it
     #   registerRequest is org.gluu.oxauth.client.RegisterRequest
     #   client is org.gluu.oxauth.model.registration.Client
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def updateClient(self, registerRequest, client, configurationAttributes):
         print "Client registration. UpdateClient method"
         return True
+    
+    # This method is invoked if softwareStatementValidationType = script in your oxAuth JSON configuration
+    # and your JWT software statement is signed with an algorithm belonging to the HMAC family  
+    # context is an instance of org.gluu.oxauth.service.external.context.DynamicClientRegistrationContext
+    def getSoftwareStatementHmacSecret(self, context):
+    	return "Secret"
 
+    # This method is invoked if softwareStatementValidationType = script in your oxAuth JSON configuration
+    # context is an instance of org.gluu.oxauth.service.external.context.DynamicClientRegistrationContext
+    def getSoftwareStatementJwks(self, context):
+    	# Returns a JWKS as a JSON string 
+    	return "{\"keys\":[ ]}"
+    
     def getApiVersion(self):
         return 2
 
