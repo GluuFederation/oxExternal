@@ -57,6 +57,8 @@ Copy the resulting contents found under Encoded (the major text area). This is y
 1. Check `enable` and leave any other fields with defaults
 1. Click on `Udpdate`
 
+![sample image](./screenshot.png)
+
 ## Test
 
 In your filesystem create a file `client.json`. Here is an example:
