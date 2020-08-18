@@ -28,8 +28,8 @@ class ClientRegistration(ClientRegistrationType):
             
         prop = "JWKS"
         if not configurationAttributes.containsKey(prop):
-            print "Client registration. Initialization. Property '%s' is mandatory" % prop
-            return False
+            print "Client registration. Initialization. Property '%s' not set" % prop
+            print "Client registration. Initialization. Ensure your software_statement uses an HMAC algorithm and that 'shared_secret' property is set"
         else:
             # JSON string expected: { "keys": [ ... ] }
             self.jwks = configurationAttributes.get(prop).getValue2()
@@ -78,12 +78,15 @@ class ClientRegistration(ClientRegistrationType):
                 print "Client registration. Parsing statement as JWT"
                 jwt = Jwt.parse(statement)
                 
-                allowed_scopes = jwt.getClaims().getClaimAsString("software_scopes")
-                print "Client registration. Software scopes are: %s" % allowed_scopes                
-                allowed_scopes = StringHelper.split(allowed_scopes, " ")
-                
-                self.setClientScopes(client, allowed_scopes)
-                client.setTrustedClient(self.software_authorized_client)
+                if self.isExpired(jwt):
+                    return False
+                else:
+                    allowed_scopes = jwt.getClaims().getClaimAsString("software_scopes")
+                    print "Client registration. Software scopes are: %s" % allowed_scopes                
+                    allowed_scopes = StringHelper.split(allowed_scopes, " ")
+                    
+                    self.setClientScopes(client, allowed_scopes)
+                    client.setTrustedClient(self.software_authorized_client)
         except:
             print "Exception: ", sys.exc_info()[1]
             
@@ -102,13 +105,14 @@ class ClientRegistration(ClientRegistrationType):
     # and your JWT software statement is signed with an algorithm belonging to the HMAC family  
     # context is an instance of org.gluu.oxauth.service.external.context.DynamicClientRegistrationContext
     def getSoftwareStatementHmacSecret(self, context):
+    	print "Client registration. getSoftwareStatementHmacSecret called"
         return self.shared_secret
 
     # This method is invoked if softwareStatementValidationType = script in your oxAuth JSON configuration
     # context is an instance of org.gluu.oxauth.service.external.context.DynamicClientRegistrationContext
     def getSoftwareStatementJwks(self, context):
         # Returns a JWKS as a JSON string 
-        print "Client registration. JWKS called"
+        print "Client registration. getSoftwareStatementJwks called"
         return self.jwks
         
     def getApiVersion(self):
@@ -134,10 +138,12 @@ class ClientRegistration(ClientRegistrationType):
             exp_date = jwt.getClaims().getClaimAsDate(JwtClaimName.EXPIRATION_TIME)
             print "Client registration. JWT exp is %s" % exp_date    
             expired = exp_date < datetime.datetime.now()
+            
+            print "Client registration. JWT has %s expired" % ("" if expired else "not yet")
+            return expired
         except:
-            print "Exception: ", sys.exc_info()[1]
-        print "Client registration. JWT has %s expired" % ("" if expired else "not yet")
-        return expired
+            # print "Exception: ", sys.exc_info()[1]
+            return False
 
 
     def setClientScopes(self, client, requiredScopes):

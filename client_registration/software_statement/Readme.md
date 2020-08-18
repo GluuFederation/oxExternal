@@ -26,8 +26,8 @@ There are many ways to generate a JWT. The steps described below exemplify how t
 
 ### Adjust payload data 
 
-1. Remove all properties listed except `iat`
-1. Optional: Add a property named `exp`. Make its value equal to `iat div 1000 + 36000` (where `div` denotes integer division). This will set the expiration of your JWT in 10 hours
+1. Remove all properties listed except `iat` (issued at)
+1. (Optional) Add a property named `exp`. Assign a value greater than `iat`. This will set the expiration of your JWT. Time is measured in milliseconds. No registration will take place if an expired token is presented. 
 1. Add a property named `software_scopes` listing the scopes separated by a single whitespace. These are the "additional" scopes that the client to be registered will be assigned. The available scopes can be found in oxTrust; visit `OpenID Connect > Scopes`
 
 Here is an example:
