@@ -52,7 +52,7 @@ Copy the resulting contents found under Encoded (the major text area). This is y
 1. Click on `add new property`. On the left side enter `client_redirect_uris`, on the right enter a comma-separated list of redirect uris. This script will only take effect if the upcoming registration request contains any of the URIs listed here
 1. (Optional) Click on `add new property`. On the left side enter `software_authorized_client`, and on the right `true`. Setting this property to true will prevent the consent form being shown
 1. Click on `add new property`. On the left side enter `JWKS`, on the right paste the [jwks](#generate-a-jwks). Ensure it is pasted fully, otherwise you'll have to make it a one-liner
-1. In the script text-area enter [these](https://github.com/GluuFederation/oxExternal/raw/master/client_registration/software_statement/SampleScript.py) code
+1. In the script text-area paste [these](https://github.com/GluuFederation/oxExternal/raw/master/client_registration/software_statement/SampleScript.py) contents
 1. Check `enable` and leave any other fields with defaults
 1. Click on `Udpdate`
 
