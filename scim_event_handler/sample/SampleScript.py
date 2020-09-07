@@ -66,9 +66,13 @@ class ScimEventHandler(ScimType):
         return True
         
     def postCreateUser(self, user, configurationAttributes):
+    	# user is the instance as modified in createUser method. Modifications applied here will not
+    	# take effect in the output of the API and will not be persisted automatically to database either 
         return True
 
     def postUpdateUser(self, user, configurationAttributes):
+    	# user is the instance as modified in updateUser method. Modifications applied here will not
+    	# take effect in the output of the API and will not be persisted automatically to database either
         return True
 
     def postDeleteUser(self, user, configurationAttributes):
@@ -91,14 +95,16 @@ class ScimEventHandler(ScimType):
     def getGroup(self, group, configurationAttributes):
         return True
 
-	#This method is available in CE 4.2 onwards
+	# This method is available in CE 4.2 onwards
 	# results is an instance of org.gluu.persist.model.PagedResult<ScimCustomPerson>
     def postSearchUsers(self, results, configurationAttributes):
     	# person = results.getEntries().get(0)
-    	# person.setUid("fade_uid")
+    	# person.setUid("fake_uid")
+    	# Modifications on results variable will take effect on the output of the API call
     	return True
 
-	#This method is available in CE 4.2 onwards
+	# This method is available in CE 4.2 onwards
 	# results is an instance of org.gluu.persist.model.PagedResult<org.gluu.oxtrust.model.GluuGroup>
     def postSearchGroups(self, results, configurationAttributes):
+    	# Modifications on results variable will take effect on the output of the API call
     	return True
