@@ -42,7 +42,7 @@ To be able to identify which service call corresponds to which party, SCIM reque
 
 1. Click on `update` at the bottom of the page
 
-## Add the attribute to the user extension
+### Add the attribute to the user extension
 
 1. In oxTrust navigate to `Configuration` > `Attributes`
 
