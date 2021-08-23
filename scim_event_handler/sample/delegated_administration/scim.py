@@ -1,6 +1,7 @@
 # Visit https://www.gluu.org/docs/gluu-server/user-management/scim-scripting/ to learn more
-from org.gluu.oxauth.model.jwt import Jwt, JwtClaimName
 from org.gluu.model.custom.script.type.scim import ScimType
+from org.gluu.oxauth.model.jwt import Jwt, JwtClaimName
+from org.gluu.oxtrust.ws.rs.scim2 import BaseScimWebService
 
 import java
 import sys
@@ -82,66 +83,48 @@ class ScimEventHandler(ScimType):
     def postSearchGroups(self, results, configurationAttributes):
         return True
         
-    def allowResourceOperation(self, context, entity, configurationAttributes):
-        print "ScimEventHandler (allowResourceOperation): SCIM endpoint invoked is %s (HTTP %s)" \
+    def manageResourceOperation(self, context, entity, payload, configurationAttributes):
+        print "ScimEventHandler (manageResourceOperation): SCIM endpoint invoked is %s (HTTP %s)" \
         % (context.getPath(), context.getMethod())
         
-        ptmap = context.getPassthroughMap()
-        
         if context.getResourceType() != "User":
-            ptmap.put("error", "Not a user operation")
-            return False
+            return self.errorResponse(403, "Not a user operation")
         
         try:            
             expected_org = self.extractOrganization(context.getQueryParams())
              
             if expected_org == None:
-                ptmap.put("error", "No '%s' claim found in token" % self.claim)
-                return False                
+                return self.errorResponse(400, "No '%s' claim found in token" % self.claim)
             
             if expected_org != entity.getAttribute("o"):
-                ptmap.put("error", "The user target of this SCIM operation does not match " + \
+                return self.errorResponse(403, "The user target of this SCIM operation does not match " + \
                     "the expected value %s=%s" % (self.claim, expected_org))
-                return False
             
-            print "ScimEventHandler (allowResourceOperation): SCIM operation is allowed"
-            return True
+            print "ScimEventHandler (manageResourceOperation): SCIM operation is allowed"
+            return None
         except:
-            print "ScimEventHandler (init): Error ", sys.exc_info()[1]
-            ptmap.put("error", str(sys.exc_info()[1])) 
-        
-        return False 
+            print "ScimEventHandler (manageResourceOperation): Error ", sys.exc_info()[1]
+            return self.errorResponse(500, str(sys.exc_info()[1]))
     
-    def allowSearchOperation(self, context, configurationAttributes):
-        print "ScimEventHandler (allowSearchOperation): SCIM endpoint invoked is %s (HTTP %s)" \
+    def manageSearchOperation(self, context, searchRequest, configurationAttributes):
+        print "ScimEventHandler (manageSearchOperation): SCIM endpoint invoked is %s (HTTP %s)" \
         % (context.getPath(), context.getMethod())
         
-        ptmap = context.getPassthroughMap()
-        
         if context.getResourceType() != "User":
-            ptmap.put("error", "Not a user operation")
-            return None
+            return self.errorResponse(403, "Not a user operation")
         
         try:            
             expected_org = self.extractOrganization(context.getQueryParams())
             
             if expected_org == None:
-                ptmap.put("error", "No '%s' claim found in token" % self.claim)
-                return None
+                return self.errorResponse(400, "No '%s' claim found in token" % self.claim)
         
             # build a SCIM equality filter using 'o' attribute part of user extension 
-            return "urn:ietf:params:scim:schemas:extension:gluu:2.0:User:o eq \"%s\"" % expected_org         
+            context.setFilterPrepend("urn:ietf:params:scim:schemas:extension:gluu:2.0:User:o eq \"%s\"" % expected_org)
+            return None       
         except:
-            print "ScimEventHandler (init): Error ", sys.exc_info()[1]
-            ptmap.put("error", str(sys.exc_info()[1]))
-        
-        return None
-    
-    def rejectedResourceOperationResponse(self, context, entity, configurationAttributes):
-        return self.buildDenyMessage(context.getPassthroughMap().get("error"))
-    
-    def rejectedSearchOperationResponse(self, context, configurationAttributes):
-        return self.buildDenyMessage(context.getPassthroughMap().get("error"))
+            print "ScimEventHandler (manageSearchOperation): Error ", sys.exc_info()[1]
+            return self.errorResponse(500, str(sys.exc_info()[1]))
 
 # Misc functions
 
@@ -165,8 +148,7 @@ class ScimEventHandler(ScimType):
                 raise Exception("Presented token is expired")            
         
         return jwt_claims.getClaimAsString(self.claim)
-        
-    def buildDenyMessage(self, err):
-        if err != None:
-            err = ". " + err
-        return "Operation not allowed" + err
+
+
+    def errorResponse(self, code, err):
+        return BaseScimWebService.getErrorResponse(code, None, err)

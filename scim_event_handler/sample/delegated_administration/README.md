@@ -54,7 +54,7 @@ To be able to identify which service call corresponds to which party, SCIM reque
 
 ## Test
 
-Now you should be able to send requests passing an extra param called `id_token` whose contents will help determine if the call is allowed or denied (HTTP status code 403) for the user in question. To learn more about how the rules for execution of SCIM operations work, take a look at this [page](https://www.gluu.org/docs/gluu-server/4.3/user-management/scim-scripting/#defining-rules-for-execution-of-scim-operations).
+Now you should be able to send requests passing an extra param called `id_token` whose contents will help determine if the call is allowed or denied (HTTP status code 403) for the user in question. To learn more about how the rules for execution of SCIM operations work, take a look at this [page](https://www.gluu.org/docs/gluu-server/4.3/user-management/scim-scripting/#controlling-execution-of-scim-operations).
 
 Note for the case of searches, results will only contain users that match the expected `o` value.
 
